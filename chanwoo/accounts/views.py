@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import resolve_url
 from django.views import generic
 
 
@@ -11,4 +12,7 @@ class Register(generic.CreateView):
     template_name = 'registration/register.html'
 
     def get_success_url(self):
-        return settings.LOGIN_URL
+        nxt = ""
+        if self.request.GET.get("next", ""):
+            nxt = "?next={}".format(self.request.GET['next'])
+        return resolve_url(settings.LOGIN_URL + nxt)
