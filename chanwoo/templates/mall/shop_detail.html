@@ -2,7 +2,15 @@
 
 {% block content %}
 <div class="container">
-  <h1>{{ shop.name }}{% if user.is_authenticated %} <a href="{% url 'mall:shop_update' shop.pk %}"><small>수정하기</small></a>{% endif %}</h1>
+  <h1>
+    {{ shop.name }}
+    {% if user.is_authenticated %}
+    <small>
+      <a href="{% url 'mall:shop_update' shop.pk %}">수정</a> /
+      <a href="{% url 'mall:shop_delete' shop.pk %}">삭제</a>
+    </small>
+    {% endif %}
+  </h1>
   <img src="{{ shop.image1.url }}">
   <p>전화: {{ shop.phone }}</p>
   <p>주소: {{ shop.address }}</p>
@@ -21,7 +29,13 @@
   </div>
   <ul>
     {% for review in shop.reviews.all %}
-    <li>{{ review.content }} — {{ review.user }} @ {{ review.created_at }}{% if user == review.user %} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a>{% endif %}</li>
+    <li>
+      {{ review.content }} — {{ review.user }} @ {{ review.created_at }}
+      {% if user == review.user or user.is_superuser %}
+      (<a href="{% url 'mall:review_update' review.pk %}">수정</a> /
+      <a href="{% url 'mall:review_delete' review.pk %}">삭제</a>)
+      {% endif %}
+    </li>
     {% empty %}
     {% endfor %}
   </ul>

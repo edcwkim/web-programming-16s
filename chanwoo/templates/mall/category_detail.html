@@ -2,10 +2,26 @@
 
 {% block content %}
 <div class="container">
-  <h1>{{ category.name }} <a href="{% url 'mall:category_update' category.pk %}"><small>수정하기</small></a></h1>
+  <h1>
+    {{ category.name }}
+    {% if user.is_superuser %}
+    <small>
+      <a href="{% url 'mall:category_update' category.pk %}">수정</a> /
+      <a href="{% url 'mall:category_delete' category.pk %}">삭제</a>
+    </small>
+    {% endif %}
+  </h1>
   <ul>
     {% for shop in category.shops.all %}
-    <li><a href="{{ shop.get_absolute_url }}">{{ shop.name }}</a> <a href="{% url 'mall:shop_update' shop.pk %}"><small>수정하기</small></a></li>
+    <li>
+      <a href="{{ shop.get_absolute_url }}">{{ shop.name }}</a>
+      {% if user.is_authenticated %}
+      <small>
+        <a href="{% url 'mall:shop_update' shop.pk %}">>수정</a> /
+        <a href="{% url 'mall:shop_delete' shop.pk %}">삭제</a>
+      </small>
+      {% endif %}
+    </li>
     {% empty %}
     <div>매장이 없습니다.</div>
     {% endfor %}

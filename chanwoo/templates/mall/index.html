@@ -4,10 +4,26 @@
 <div class="container">
   <h2>분류</h2>
   {% for category in categories %}
-  <h3><a href="{{ category.get_absolute_url }}">{{ category.name }}</a>{% if user.is_superuser %} <a href="{% url 'mall:category_update' category.pk %}"><small>수정하기</small></a>{% endif %}</h3>
+  <h3>
+    <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+    {% if user.is_superuser %}
+    <small>
+      <a href="{% url 'mall:category_update' category.pk %}">수정</a> /
+      <a href="{% url 'mall:category_delete' category.pk %}">삭제</a>
+    </small>
+    {% endif %}
+  </h3>
   <ul>
     {% for shop in category.shops.all %}
-    <li><a href="{{ shop.get_absolute_url }}">{{ shop.name }}</a>{% if user.is_authenticated %} <a href="{% url 'mall:shop_update' shop.pk %}"><small>수정하기</small></a>{% endif %}</li>
+    <li>
+      <a href="{{ shop.get_absolute_url }}">{{ shop.name }}</a>
+      {% if user.is_authenticated %}
+      <small>
+        <a href="{% url 'mall:shop_update' shop.pk %}">수정</a> /
+        <a href="{% url 'mall:shop_delete' shop.pk %}">삭제</a>
+      </small>
+      {% endif %}
+    </li>
     {% empty %}
     <div>매장이 없습니다.</div>
     {% endfor %}
@@ -24,7 +40,13 @@
   <h2>최근 후기</h2>
   <ul>
     {% for review in reviews %}
-    <li><a href="{{ review.shop.get_absolute_url }}">{{ review.content }}</a> — {{ review.user }} @ {{ review.created_at }}{% if user == review.user %} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a>{% endif %}</li>
+    <li>
+      <a href="{{ review.shop.get_absolute_url }}">{{ review.content }}</a> — {{ review.user }} @ {{ review.created_at }}
+      {% if user == review.user or user.is_superuser %}
+      (<a href="{% url 'mall:review_update' review.pk %}">수정</a> /
+      <a href="{% url 'mall:review_delete' review.pk %}">삭제</a>)
+      {% endif %}
+    </li>
     {% empty %}
     <div>최근 후기가 없습니다.</div>
     {% endfor %}

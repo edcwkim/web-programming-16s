@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, resolve_url
 from django.views import generic
 from .forms import CategoryForm, ShopForm, ReviewForm
 from .models import Category, Shop, Review
@@ -61,6 +61,19 @@ class CategoryUpdate(UserPassesTestMixin, generic.UpdateView):
         return super().form_invalid(form)
 
 
+class CategoryDelete(UserPassesTestMixin, generic.DeleteView):
+
+    model = Category
+    template_name = "mall/delete.html"
+
+    def test_func(self):
+        return self.request.user.is_superuser()
+
+    def get_success_url(self):
+        messages.success(self.request, "분류 삭제 성공")
+        return resolve_url("mall:index")
+
+
 class ShopDetail(generic.DetailView):
 
     model = Shop
@@ -73,14 +86,6 @@ class ShopCreate(LoginRequiredMixin, generic.CreateView):
     model = Shop
     form_class = ShopForm
     template_name = "mall/shop_create.html"
-
-    def form_valid(self, form):
-        messages.success(self.request, "매장 등록 성공")
-        return super().form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, "매장 등록 실패")
-        return super().form_invalid(form)
 
 
 class ShopUpdate(LoginRequiredMixin, generic.UpdateView):
@@ -96,6 +101,16 @@ class ShopUpdate(LoginRequiredMixin, generic.UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, "매장 수정 실패")
         return super().form_invalid(form)
+
+
+class ShopDelete(LoginRequiredMixin, generic.DeleteView):
+
+    model = Shop
+    template_name = "mall/delete.html"
+
+    def get_success_url(self):
+        messages.success(self.request, "매장 삭제 성공")
+        return resolve_url("mall:index")
 
 
 class ReviewCreate(LoginRequiredMixin, generic.CreateView):
@@ -123,7 +138,8 @@ class ReviewUpdate(UserPassesTestMixin, generic.UpdateView):
     template_name = "mall/review_update.html"
 
     def test_func(self):
-        return self.request.user == self.get_object().user
+        return (self.request.user == self.get_object().user or
+                self.request.user.is_superuser())
 
     def form_valid(self, form):
         messages.success(self.request, "후기 수정 성공")
@@ -132,3 +148,22 @@ class ReviewUpdate(UserPassesTestMixin, generic.UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, "후기 수정 실패")
         return super().form_invalid(form)
+
+
+class ReviewDelete(UserPassesTestMixin, generic.DeleteView):
+
+    model = Review
+    template_name = "mall/delete.html"
+    parent = None
+
+    def test_func(self):
+        return (self.request.user == self.get_object().user or
+                self.request.user.is_superuser())
+
+    def post(self, request, *args, **kwargs):
+        self.parent = self.get_object().shop
+        return super().post(request, *args, **kwargs)
+
+    def get_success_url(self):
+        messages.success(self.request, "후기 삭제 성공")
+        return resolve_url(self.parent)

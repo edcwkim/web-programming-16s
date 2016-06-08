@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <form action="" method="post">{% csrf_token %}
+    <p>정말로 "{{ object }}"을(를) 지우시겠습니까?</p>
+    <button class="btn btn-danger" type="submit">지우기</button>
+  </form>
+</div>
+{% endblock %}
