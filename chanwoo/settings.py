@@ -39,7 +39,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'chanwoo.accounts.apps.AccountConfig',
+    'chanwoo.accounts.apps.AccountsConfig',
     'chanwoo.mall.apps.MallConfig',
 
     'widget_tweaks',
