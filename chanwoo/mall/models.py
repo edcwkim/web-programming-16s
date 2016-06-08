@@ -3,7 +3,9 @@ import uuid
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.db.models.signals import pre_save
 from django.utils import timezone
+from .images import thumbnailize_image
 
 
 class Category(models.Model):
@@ -51,6 +53,9 @@ class Shop(models.Model):
 
     def get_absolute_url(self):
         return reverse("mall:shop_detail", args=[self.pk])
+
+
+pre_save.connect(thumbnailize_image, Shop)
 
 
 class Review(models.Model):
