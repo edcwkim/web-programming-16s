@@ -17,6 +17,7 @@
     <![endif]-->
   </head>
   <body class="{% block body_class %}{% endblock %}">
+    {% block navbar %}{% include 'navbar.html' %}{% endblock %}
     {% if messages %}
     <div class="container">
       {% for message in messages %}
