@@ -15,12 +15,12 @@
   {% empty %}
   <h3><small>분류가 없습니다.</small></h3>
   {% endfor %}
-  <div><a href="{% url 'mall:shop_create' %}">매장 등록하기</a></div>
   <div><a href="{% url 'mall:category_create' %}">분류 만들기</a></div>
+  <div><a href="{% url 'mall:shop_create' %}">매장 등록하기</a></div>
   <h2>최근 후기</h2>
   <ul>
     {% for review in reviews %}
-    <li><a href="{{ review.shop.get_absolute_url }}">{{ review.content }}</a> — {{ comment.updated_at }} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a></li>
+    <li><a href="{{ review.shop.get_absolute_url }}">{{ review.content }}</a> — {{ review.updated_at }} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a></li>
     {% empty %}
     <div>최근 후기가 없습니다.</div>
     {% endfor %}

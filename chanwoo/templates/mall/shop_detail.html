@@ -21,9 +21,11 @@
   </div>
   <ul>
     {% for review in shop.reviews.all %}
-    <li>{{ review.content }} — {{ comment.updated_at }} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a></li>
+    <li>{{ review.content }} — {{ review.updated_at }} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a></li>
     {% empty %}
     {% endfor %}
   </ul>
+  <div><a href="{% url 'mall:review_create' shop.pk %}">리뷰 등록하기</a></div>
+  <div><a href="{% url 'mall:index' %}">처음으로 돌아가기</a></div>
 </div>
 {% endblock %}
