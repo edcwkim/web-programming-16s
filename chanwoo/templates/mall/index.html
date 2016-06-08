@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h2>분류</h2>
+  {% for category in categories %}
+  <h3><a href="{{ category.get_absolute_url }}">{{ category.name }}</a> <a href="{% url 'mall:category_update' category.pk %}"><small>수정하기</small></a></h3>
+  <ul>
+    {% for shop in category.shops.all %}
+    <li><a href="{{ shop.get_absolute_url }}">{{ shop.name }}</a> <a href="{% url 'mall:shop_update' shop.pk %}"><small>수정하기</small></a></li>
+    {% empty %}
+    <div>매장이 없습니다.</div>
+    {% endfor %}
+  </ul>
+  {% empty %}
+  <h3><small>분류가 없습니다.</small></h3>
+  {% endfor %}
+  <div><a href="{% url 'mall:shop_create' %}">매장 등록하기</a></div>
+  <div><a href="{% url 'mall:category_create' %}">분류 만들기</a></div>
+  <h2>최근 후기</h2>
+  <ul>
+    {% for review in reviews %}
+    <li><a href="{{ review.shop.get_absolute_url }}">{{ review.content }}</a> — {{ comment.updated_at }} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a></li>
+    {% empty %}
+    <div>최근 후기가 없습니다.</div>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

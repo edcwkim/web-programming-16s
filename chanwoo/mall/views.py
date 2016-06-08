@@ -8,6 +8,11 @@ class Index(generic.ListView):
     context_object_name = "categories"
     template_name = "mall/index.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["reviews"] = Review.objects.order_by('-created_at').all()
+        return context
+
 
 class CategoryDetail(generic.DetailView):
 

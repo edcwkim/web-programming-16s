@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>{{ shop.name }} <a href="{% url 'mall:shop_update' shop.pk %}"><small>수정하기</small></a></h1>
+  <img src="{{ shop.image1.url }}">
+  <p>전화: {{ shop.phone }}</p>
+  <p>주소: {{ shop.address }}</p>
+  <p>{{ shop.explanation }}</p>
+  <div class="row">
+    {% if shop.image2 %}
+    <div class="col-xs-6">
+      <img src="{{ shop.image2.url }}">
+    </div>
+    {% endif %}
+    {% if shop.image3 %}
+    <div class="col-xs-6">
+      <img src="{{ shop.image3.url }}">
+    </div>
+    {% endif %}
+  </div>
+  <ul>
+    {% for review in shop.reviews.all %}
+    <li>{{ review.content }} — {{ comment.updated_at }} <a href="{% url 'mall:review_update' review.pk %}">(수정하기)</a></li>
+    {% empty %}
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
