@@ -2,6 +2,9 @@
 
 {% block content %}
 <div class="container">
-
+  <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+    {% include 'form_snippet.html' %}
+    <button class="btn btn-default" type="submit">등록하기</button>
+  </form>
 </div>
 {% endblock %}

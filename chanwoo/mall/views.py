@@ -1,4 +1,6 @@
+from django.shortcuts import get_object_or_404
 from django.views import generic
+from .forms import CategoryForm, ShopForm, ReviewForm
 from .models import Category, Shop, Review
 
 
@@ -23,12 +25,16 @@ class CategoryDetail(generic.DetailView):
 
 class CategoryCreate(generic.CreateView):
 
-    pass
+    model = Category
+    form_class = CategoryForm
+    template_name = "mall/category_create.html"
 
 
 class CategoryUpdate(generic.UpdateView):
 
-    pass
+    model = Category
+    form_class = CategoryForm
+    template_name = "mall/category_update.html"
 
 
 class ShopDetail(generic.DetailView):
@@ -40,19 +46,32 @@ class ShopDetail(generic.DetailView):
 
 class ShopCreate(generic.CreateView):
 
-    pass
+    model = Shop
+    form_class = ShopForm
+    template_name = "mall/shop_create.html"
 
 
 class ShopUpdate(generic.UpdateView):
 
-    pass
+    model = Shop
+    form_class = ShopForm
+    template_name = "mall/shop_update.html"
 
 
 class ReviewCreate(generic.CreateView):
 
-    pass
+    model = Review
+    form_class = ReviewForm
+    template_name = "mall/review_create.html"
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.object.shop = get_object_or_404(Shop, pk=self.args[0])
+        return super().form_valid(form)
 
 
 class ReviewUpdate(generic.UpdateView):
 
-    pass
+    model = Review
+    form_class = ReviewForm
+    template_name = "mall/review_update.html"
