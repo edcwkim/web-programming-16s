@@ -6,6 +6,13 @@ from .forms import CategoryForm, ShopForm, ReviewForm
 from .models import Category, Shop, Review
 
 
+def test_if_superuser(obj):
+    return obj.request.user.is_superuser
+
+def test_if_created(obj):
+    return obj.request.user == obj.get_object().user or test_if_superuser(obj)
+
+
 class Index(generic.ListView):
 
     model = Category
@@ -32,7 +39,7 @@ class CategoryCreate(UserPassesTestMixin, generic.CreateView):
     template_name = "mall/category_create.html"
 
     def test_func(self):
-        return self.request.user.is_superuser()
+        return test_if_superuser
 
     def form_valid(self, form):
         messages.success(self.request, "분류 생성 성공")
@@ -50,7 +57,7 @@ class CategoryUpdate(UserPassesTestMixin, generic.UpdateView):
     template_name = "mall/category_update.html"
 
     def test_func(self):
-        return self.request.user.is_superuser()
+        return test_if_superuser
 
     def form_valid(self, form):
         messages.success(self.request, "분류 수정 성공")
@@ -67,7 +74,7 @@ class CategoryDelete(UserPassesTestMixin, generic.DeleteView):
     template_name = "mall/delete.html"
 
     def test_func(self):
-        return self.request.user.is_superuser()
+        return test_if_superuser
 
     def get_success_url(self):
         messages.success(self.request, "분류 삭제 성공")
@@ -138,8 +145,7 @@ class ReviewUpdate(UserPassesTestMixin, generic.UpdateView):
     template_name = "mall/review_update.html"
 
     def test_func(self):
-        return (self.request.user == self.get_object().user or
-                self.request.user.is_superuser())
+        return test_if_created
 
     def form_valid(self, form):
         messages.success(self.request, "후기 수정 성공")
@@ -157,8 +163,7 @@ class ReviewDelete(UserPassesTestMixin, generic.DeleteView):
     parent = None
 
     def test_func(self):
-        return (self.request.user == self.get_object().user or
-                self.request.user.is_superuser())
+        return test_if_created
 
     def post(self, request, *args, **kwargs):
         self.parent = self.get_object().shop
