@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from .forms import CategoryForm, ShopForm, ReviewForm
@@ -29,12 +30,28 @@ class CategoryCreate(generic.CreateView):
     form_class = CategoryForm
     template_name = "mall/category_create.html"
 
+    def form_valid(self, form):
+        messages.success(self.request, "분류 생성 성공")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "분류 생성 실패")
+        return super().form_invalid(form)
+
 
 class CategoryUpdate(generic.UpdateView):
 
     model = Category
     form_class = CategoryForm
     template_name = "mall/category_update.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, "분류 수정 성공")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "분류 수정 실패")
+        return super().form_invalid(form)
 
 
 class ShopDetail(generic.DetailView):
@@ -50,12 +67,28 @@ class ShopCreate(generic.CreateView):
     form_class = ShopForm
     template_name = "mall/shop_create.html"
 
+    def form_valid(self, form):
+        messages.success(self.request, "매장 등록 성공")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "매장 등록 실패")
+        return super().form_invalid(form)
+
 
 class ShopUpdate(generic.UpdateView):
 
     model = Shop
     form_class = ShopForm
     template_name = "mall/shop_update.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, "매장 수정 성공")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "매장 수정 실패")
+        return super().form_invalid(form)
 
 
 class ReviewCreate(generic.CreateView):
@@ -67,7 +100,12 @@ class ReviewCreate(generic.CreateView):
     def form_valid(self, form):
         self.object = form.save(commit=False)
         self.object.shop = get_object_or_404(Shop, pk=self.args[0])
+        messages.success(self.request, "후기 등록 성공")
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "후기 등록 실패")
+        return super().form_invalid(form)
 
 
 class ReviewUpdate(generic.UpdateView):
@@ -75,3 +113,11 @@ class ReviewUpdate(generic.UpdateView):
     model = Review
     form_class = ReviewForm
     template_name = "mall/review_update.html"
+
+    def form_valid(self, form):
+        messages.success(self.request, "후기 수정 성공")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, "후기 수정 실패")
+        return super().form_invalid(form)
