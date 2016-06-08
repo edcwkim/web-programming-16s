@@ -20,6 +20,7 @@ from django.views.generic.base import RedirectView
 
 urlpatterns = [
     url(r'^$', RedirectView.as_view(pattern_name='mall:index')),
+    url(r'^', include('chanwoo.auth.urls')),
     url(r'^mall/', include('chanwoo.mall.urls', namespace='mall')),
     url(r'^admin/', admin.site.urls),
 ]
