@@ -1,5 +1,6 @@
 import os
 import uuid
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils import timezone
@@ -52,7 +53,7 @@ class Shop(models.Model):
 class Review(models.Model):
 
     shop = models.ForeignKey(Shop, models.CASCADE, related_name="reviews")
-    # user = models.ForeignKey(settings.AUTH_USER_MODEL, models.CASCADE, related_name="reviews")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, models.SET_NULL, blank=True, null=True, related_name="reviews")
 
     content = models.TextField(max_length=65535)
     created_at = models.DateTimeField(auto_now_add=True)
