@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 
 
@@ -9,6 +10,9 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name or "Category {}".format(self.pk)
+
+    def get_absolute_url(self):
+        return reverse("mall:category_detail", args=[self.pk])
 
 
 class Shop(models.Model):
@@ -30,6 +34,9 @@ class Shop(models.Model):
     def __str__(self):
         return self.name or "Shop {}".format(self.pk)
 
+    def get_absolute_url(self):
+        return reverse("mall:shop_detail", args=[self.pk])
+
 
 class Review(models.Model):
 
@@ -42,3 +49,6 @@ class Review(models.Model):
 
     def __str__(self):
         return "Review {}".format(self.pk)
+
+    def get_absolute_url(self):
+        return reverse("mall:shop_detail", args=[self.shop.pk])
