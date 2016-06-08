@@ -1,5 +1,8 @@
+import os
+import uuid
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils import timezone
 
 
 class Category(models.Model):
@@ -15,6 +18,14 @@ class Category(models.Model):
         return reverse("mall:category_detail", args=[self.pk])
 
 
+def random_directory_path(instance, filename):
+    app_label = instance.__class__._meta.app_label
+    cls_name = instance.__class__.__name__.lower()
+    ymd_path = timezone.now().strftime("%y/%m/%d")
+    filename = ".".join([uuid.uuid4().hex, filename.rsplit(".")[-1]])
+    return os.path.join(app_label, cls_name, ymd_path, filename)
+
+
 class Shop(models.Model):
 
     category = models.ForeignKey(Category, models.SET_NULL, blank=True, null=True, related_name="shops")
@@ -24,9 +35,9 @@ class Shop(models.Model):
     address = models.CharField(max_length=4095)
     explanation = models.TextField(max_length=65535)
 
-    image1 = models.ImageField()
-    image2 = models.ImageField(blank=True, null=True)
-    image3 = models.ImageField(blank=True, null=True)
+    image1 = models.ImageField(upload_to=random_directory_path)
+    image2 = models.ImageField(upload_to=random_directory_path, blank=True, null=True)
+    image3 = models.ImageField(upload_to=random_directory_path, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
